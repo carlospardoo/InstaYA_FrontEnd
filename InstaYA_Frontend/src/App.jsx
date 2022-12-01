@@ -1,64 +1,116 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import { useState, createContext } from 'react'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import './App.css'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
+import { FormLogin } from './components/FormLogin'
+import { Registro } from './components/Registro'
+import { BandejaInicio } from './components/BandejaInicio'
+import { RegistroEntrega } from './components/RegistroEntrega'
+import { ConsultaEntrega } from './components/ConsultaEntrega'
+import { ActualizaEntrega } from './components/ActualizaEntrega'
+
+import { UserContext } from './components/UserContext'
+
 function App() {
 
-  return (
-    <div className="App">
-        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-            <div className="container px-lg-5">
-                <a className="navbar-brand" href="#!">InstaYA</a>
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
-            </div>
-        </nav>
+    const [user, setUser] = useState('');
 
-        <header className="py-5">
-            <div className="container px-lg-5">
-                <div className="p-4 p-lg-5 bg-light rounded-3 text-center">
-                    <div className="m-4 m-lg-5">
-                        <h1 className="display-5 fw-bold">Gestiona tus pedidos</h1>
-                        <p className="fs-4">Solicita el envío de un paquete a un destino especificado, de manera fácil y rápida, sin moverte de tu hogar. Nosotros nos encargaremos del resto</p>
-                    </div>
-                </div>
-            </div>
-        </header>
+    const userValueContext = {user, setUser};
 
-        {/* <!-- Page Content--> */}
-        <section className="pt-4">
-            <div className="container px-lg-5">
-                {/* <!-- Page Features--> */}
-                <div className="row gx-lg-5">
-                    <div className="col-lg-6 col-xxl-4 mb-5">
-                        <div className="card bg-light border-0 h-100">
-                            <div className="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                                <div className="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"><i className="bi bi-collection"></i></div>
-                                <h2 className="fs-4 fw-bold">Solicitar una nueva entrega</h2>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-lg-6 col-xxl-4 mb-5">
-                        <div className="card bg-light border-0 h-100">
-                            <div className="card-body text-center p-4 p-lg-5 pt-0 pt-lg-0">
-                                <div className="feature bg-primary bg-gradient text-white rounded-3 mb-4 mt-n4"><i className="bi bi-cloud-download"></i></div>
-                                <h2 className="fs-4 fw-bold">Ver mis entregas</h2>
-                            </div>
-                        </div>
-                    </div>
+    const sesion = user === '' ? 'collapse hide-user-info' : 'collapse show-user-info';
+
+    const handlerLogout = () => setUser('');
+
+    const envio = () => {
+        alert("Presionado")
+    }
+
+    return (
+        <>
+            {/* 
+
+        <UserContext.Provider>
+            <div className='sesion' >
+                <span>{user}</span>
+                <span onClick={() =>handlerLogout}>Cerrar Sesión</span>
+            </div>
+        </UserContext.Provider> */}
+
+            <div className="container">
+                <UserContext.Provider value={userValueContext}>
                     
-                </div>
+    
+                    <BrowserRouter>
+
+                        <nav className="navbar navbar-expand-lg text-bg-danger">
+                            <div className="container-fluid px-lg-5">
+                                <a className="navbar-brand text-bg-danger" href="/">
+                                    <img src="./src/assets/Logo.png" alt="InstaYA" width="35" height="35" />
+                                    InstaYA
+                                </a>
+                                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
+                                <div className={sesion} id="navbarSupportedContent">
+                                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                                        <li className="nav-item m-1"><span>{user}</span></li>
+                                        <li className="nav-item m-1" role={"button"} onClick={handlerLogout} >
+                                            <Link to={'/'} style={{textDecoration: 'none', color: "inherit" }}>
+                                                <span>Cerrar Sesión</span>
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </nav>
+
+                        <Routes>
+
+                            <Route path='/registro' element={<Registro />}>
+
+                            </Route>
+
+                            <Route path='/login' element={<FormLogin />}>
+
+                                {/* <Route path='/bandeja_inicio' element={ <BandejaInicio /> }>
+
+                                </Route> */}
+
+                            </Route>
+
+                            <Route path='/bandeja_inicio' element={ <BandejaInicio /> }>
+
+                            </Route>
+    
+                            <Route path='/nueva_entrega' element={ <RegistroEntrega /> } >
+                                
+                            </Route>
+
+                            <Route path='/mis_entregas' element={ <ConsultaEntrega /> } >
+
+                            </Route>
+
+                            <Route path='/cambiar_entrega' element={ <ActualizaEntrega /> } >
+
+                            </Route>
+
+                            <Route path='/' element={<FormLogin />}>
+
+                            </Route>
+
+                        </Routes>
+
+                    </BrowserRouter>
+
+                    {/* <!-- Footer--> */}
+                    <footer className="py-5 text-bg-danger">
+                        <div className="container"><p className="m-0 text-center text-white">Copyright &copy; Carlos David Pardo Ortiz. Todos los derechos reservados </p></div>
+                    </footer>
+
+                </UserContext.Provider>
+
             </div>
-        </section>
-
-        {/* <!-- Footer--> */}
-        <footer className="py-5 bg-dark">
-            <div className="container"><p className="m-0 text-center text-white">Copyright &copy; Carlos David Pardo Ortiz. Todos los derechos reservados
-</p></div>
-        </footer>
-
-    </div>
-  )
+        </>
+    )
 }
 
 export default App

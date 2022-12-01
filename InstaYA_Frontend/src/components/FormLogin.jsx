@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 import { useContext } from 'react';
 import { TextLabel } from './TextLabel';
 import { SubmitButton } from './SubmitButton';
@@ -9,66 +10,89 @@ import { UserContext } from './UserContext';
 
 export const FormLogin = () => {
 
+    const [formLogin, setLoginUser] = useState({
+        usuario: "",
+        password: ""
+    });
+
     const navigate = useNavigate();
 
     const {user, setUser} = useContext(UserContext);
 
-    const validarLogin = (e) =>{
+    const handlerInputChange = (e) =>{
+        setLoginUser({
+            ...formLogin, [e.target.name]: e.target.value
+        });
+    };
+
+    const validarLogin = async (e) =>{
         e.preventDefault();
-        // alert("Validación del login");
-        const datos = new FormData(e.target);
-        const formProps = Object.fromEntries(datos);
+
+        // const datos = new FormData(e.target);
+        // const formProps = Object.fromEntries(datos);
+        // const usuario = formProps['txtUsuario'];
+        // const passwordData = formProps['txtPassword'];
         // console.log(datos);
         // console.log(formProps);
-        
-        /* --PETICION BACKEND
-        const usuario = formProps['txtUsuario'];
-        const passwordData = formProps['txtPassword'];
-        console.log(usuario+", "+passwordData);
-        const datosSend = JSON.stringify({
-            username: formProps['txtUsuario'].toString(), 
-            password: formProps['txtPassword'].toString()
-        });
 
+        const bodyMapper = JSON.stringify({
+            username: formLogin.usuario, 
+            password: formLogin.password
+        });
+        
+        /*PETICION BACKEND*/
+        
         const axiosConfig = {
-            method: 'GET',
-            url: 'http://127.0.0.1:9000/user/get_user',
+            method: 'POST',
+            url: 'http://127.0.0.1:9000/user/login',
             headers: { 
                 'Content-Type': 'application/json',
                 'Access-Control-Allow-Origin': '*'
             },
-            data: datosSend
+            data: bodyMapper
         };
 
         axios(axiosConfig)
         .then( res =>{
-            console.log(res)
-            if(res.response.status == 200){
-                setUser(formProps['txtUsuario']);
+            if(res.status == 200 && res.data?.message == "Login exitoso"){
+                setUser(formLogin.usuario);
                 navigate('/bandeja_inicio');
             }                
             else{
                 alert(err);
-                console.error(err);
             }                
         })
         .catch( err =>{
             alert("Error: "+err);
         });
-        */
+        
 
-        if(formProps['txtUsuario'] === 'hola' && formProps['txtPassword'] === '123' ){
-            navigate('/bandeja_inicio');
-            setUser(formProps['txtUsuario']);
-        }
+        
+
+        // const peticion = await fetch('http://127.0.0.1:9000/user/login', {
+        //     method: 'POST',
+        //     headers: { 
+        //         'Content-Type': 'application/json',
+        //         'Access-Control-Allow-Origin': '*'
+        //     },
+        //     body: bodyMapper
+        // });
+
+        // const respuesta = peticion.json();
+        // console.log(respuesta);
+
+        // if(formProps['txtUsuario'] === 'hola' && formProps['txtPassword'] === '123' ){
+        //     navigate('/bandeja_inicio');
+        //     setUser(formProps['txtUsuario']);
+        // }
 
     };
 
     return (
     <>
     <form className='m-5 abs-center' onSubmit={validarLogin} >
-        <TextLabel txtName={"txtUsuario"} lblText={"Usuario"} txtPlaceholder={"Escriba su usuario"} inputType={"text"} />
-        <TextLabel txtName={"txtPassword"} lblText={"Contraseña"} txtPlaceholder={""} inputType={"password"} />
+        <TextLabel txtName={"usuario"} lblText={"Usuario"} txtPlaceholder={"Escriba su usuario"} inputType={"text"} txtOnChange={handlerInputChange} />
+        <TextLabel txtName={"password"} lblText={"Contraseña"} txtPlaceholder={""} inputType={"password"} txtOnChange={handlerInputChange} />
         <SubmitButton name={"Login"} />
 
         <p> ¿No tienes cuenta?  

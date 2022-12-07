@@ -14,16 +14,24 @@ import { UserContext } from './components/UserContext'
 
 function App() {
 
-    const [user, setUser] = useState('');
+    const [user, setUser] = useState({
+        id: null,
+        username: '',
+        name: ''
+    });
 
     const userValueContext = {user, setUser};
 
-    const sesion = user === '' ? 'collapse hide-user-info' : 'collapse show-user-info';
+    const sesion = user.username === '' ? 'collapse hide-user-info' : 'collapse show-user-info';
 
-    const handlerLogout = () => setUser('');
+    const handlerLogout = () => setUser({
+        id: null,
+        username: '',
+        name: ''
+    });
 
     const envio = () => {
-        alert("Presionado")
+        alert("Presionado");
     }
 
     return (
@@ -52,7 +60,7 @@ function App() {
                                 <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span className="navbar-toggler-icon"></span></button>
                                 <div className={sesion} id="navbarSupportedContent">
                                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-                                        <li className="nav-item m-1"><span>{user}</span></li>
+                                        <li className="nav-item m-1"><span>{user.username}</span></li>
                                         <li className="nav-item m-1" role={"button"} onClick={handlerLogout} >
                                             <Link to={'/'} style={{textDecoration: 'none', color: "inherit" }}>
                                                 <span>Cerrar Sesión</span>

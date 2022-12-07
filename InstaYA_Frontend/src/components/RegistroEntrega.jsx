@@ -1,13 +1,18 @@
 import React from 'react'
+import { useContext } from 'react'
 import { TextLabel } from './TextLabel'
 import { SubmitButton } from './SubmitButton'
 import { Button } from './Button'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+import { useEffect } from 'react'
+import { UserContext } from './UserContext'
 
 export const RegistroEntrega = () => {
 
   const [formEntrega, setFormEntrega] = useState({
+    id: null,
     fechaRecogida: "",
     horaRecogida: "",
     alto: 0,
@@ -20,6 +25,14 @@ export const RegistroEntrega = () => {
     identificacionDestinatario: 0,
     nombreDestinatario: ""
   });
+
+  const {user, setUser} = useContext(UserContext);
+
+  useEffect(()=>{
+    setFormEntrega({
+      id: user.id
+    });  
+  }, []);
   
   const handlerInputChange = (e) =>{
     setFormEntrega({
@@ -29,6 +42,19 @@ export const RegistroEntrega = () => {
 
   const insercionEntrega = (e) =>{
     e.preventDefault();
+
+    axios({
+      url: 'http://127.0.0.1:9000/delivery/add_delivery',
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': 'http://127.0.0.1:9000'
+      },
+      data: JSON.stringify(formEntrega)
+    })
+    .then(res => alert(res.data.message) )
+    .catch(err => alert(err.data.message));
+    
   };
 
   return (

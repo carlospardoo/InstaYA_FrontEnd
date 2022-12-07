@@ -55,7 +55,11 @@ export const FormLogin = () => {
         axios(axiosConfig)
         .then( res =>{
             if(res.status == 200 && res.data?.message == "Login exitoso"){
-                setUser(formLogin.usuario);
+                setUser({
+                    id: res.data?.user?._id,
+                    username: res.data?.user?.username,
+                    name: res.data?.user?.name
+                });
                 navigate('/bandeja_inicio');
             }                
             else{
